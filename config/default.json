@@ -1,0 +1,5 @@
+
+{
+"mongoURI": "mongodb+srv://samuel:samuel123@fluttersignal.wpmiy.mongodb.net/flutter__signal?retryWrites=true&w=majority",
+"flutter__secret": "flutter__secret"
+}
