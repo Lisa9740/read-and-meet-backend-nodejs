@@ -15,16 +15,13 @@ app.use(express.json());
 // * Load Env
 dotenv.config({ path: "./config.env" });
 
-// * Connect DB
-const db = require('./config/database.js');
-
 //* Log route actions
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
 
 /** Chatroom routes */
-require("./middleware/socket")(app, io, db);
+require("./middleware/socket")(app, io);
 
 const port = process.env.PORT || 6000;
 
