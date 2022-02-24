@@ -1,7 +1,4 @@
-//const Chats = require("../schema/Chats");
-const { v4: uuidV4 } = require("uuid");
-const db = require('../config/database.js');
-
+const {ApiQueries} = require("./api_queries");
 
 const addUser = async (receiverId, senderId, socket) => {
     if (!receiverId || !senderId) {
@@ -9,7 +6,7 @@ const addUser = async (receiverId, senderId, socket) => {
     } else {
         console.log("select chats ...");
         //const user = { receiverId, senderId };
-      await  db.query("SELECT * FROM `chats` WHERE `participant_one` = " + senderId + " AND `participant_two` = " + receiverId + ";", {type: db.QueryTypes.SELECT}).then(chats =>{
+      ApiQueries.getChats(socket.handshake.query.apiToken).then(chats =>{
             if (chats.length > 0) {
                 socket.emit("openChat", {...chats[0]});
             }

@@ -23,14 +23,10 @@ if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
 
-//* Use Routes
-// * Auth Routes *//
-app.use("/login", require("./routes/login"));
-app.use("/users", require("./routes/register"));
-
 /** Chatroom routes */
 require("./middleware/socket")(app, io, db);
 
 const port = process.env.PORT || 6000;
+
 
 server.listen(port, () => console.log(`Server started on port ${port}`));
