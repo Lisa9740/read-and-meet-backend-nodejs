@@ -2,7 +2,7 @@ const { addUser } = require("../helpers/misc");
 const {ApiQueries} = require("../helpers/api_queries");
 const defaultApp = require("../helpers/firebase.params");
 
-module.exports = (app, io, db) => {
+module.exports = (app, io) => {
 
     let allUsers = [];
     let connectedUsers = [];
@@ -34,14 +34,16 @@ module.exports = (app, io, db) => {
         });
 
         socket.on("sendToUser", async (data) => {
-            await sendMessagesToOfflineUsers(data);
+            await sendNotificationToUsers(data);
         });
+
+        socket.on("disconnectUser", async function (socket) {
+            handleDisconnect(socket)
+        })
     })
 
 
-    io.on("disconnect", function (socket) {
-        handleDisconnect(socket)
-    })
+
 
     function getChats(token) {
         var chats = []
@@ -52,16 +54,19 @@ module.exports = (app, io, db) => {
         return chats;
     }
 
-    function userConnected(userName, registrationToken) {
-        let user = {userName: userName, registrationToken: registrationToken};
-        const filteredUsers = allUsers.filter(u => u.userName === userName);
+    function userConnected(userInfo, registrationToken) {
+        console.log(userInfo.name);
+        let user = {userName: userInfo, registrationToken: registrationToken};
+
+
+        const filteredUsers = allUsers.filter(u => u.userName === userInfo);
         if (filteredUsers.length === 0) {
             allUsers.push(user);
         } else {
             user = filteredUsers[0];
             user.registrationToken = registrationToken;
         }
-        connectedUsers.push(userName);
+        connectedUsers.push(userInfo);
         console.log("All Users", allUsers);
         console.log("Connected Users", connectedUsers);
     }
@@ -69,16 +74,19 @@ module.exports = (app, io, db) => {
     function handleConnection(socket) {
         const query = socket.handshake.query;
         console.log('Connect', query);
-        userConnected(query.user, query.registrationToken);
-        process.nextTick(async () => {
-            socket.emit('allChats', getChats(query.apiToken).data);
-        });
+        if (query.registrationToken !== undefined) {
+            userConnected(query.user, query.registrationToken);
+
+            process.nextTick(async () => {
+                socket.emit('allChats', getChats(query.apiToken).data);
+            });
+        }
     }
 
-    function handleDisconnect(socket) {
-        const query = socket.handshake.query;
-        console.log('Disconnect', socket.handshake.query);
-        userDisconnected(query.user);
+
+    function handleDisconnect(user) {
+        console.log('Disconnect', user);
+        userDisconnected(user);
     }
 
     function userDisconnected(userName) {
@@ -88,9 +96,12 @@ module.exports = (app, io, db) => {
         console.log("Connected Users", connectedUsers);
     }
 
-    async function sendMessagesToOfflineUsers(chat) {
+
+    // send by FCM notification to receiver message user
+    async function sendNotificationToUsers(chat) {
         chat = JSON.parse(chat)
         console.log(chat.message);
+        console.log("allUsers" + allUsers);
         const messagePayload = {
             data: {
                 type: "CHAT",
@@ -103,16 +114,22 @@ module.exports = (app, io, db) => {
             tokens: []
         };
 
-        const userTokens = allUsers.filter(user => !connectedUsers.includes(user)).map(user => {
-            return user.registrationToken
+        const userTokens = allUsers.filter(user => connectedUsers.includes(user.userName)).map(user => {
+            if (chat.recipient.toString() === user.userName){
+                return user.registrationToken
+            }
         });
+
+
         if (userTokens.length === 0) {
             return;
         }
-        messagePayload.tokens = userTokens;
+        messagePayload.tokens = userTokens.filter(function(x) {
+            return x !== undefined;
+        });
 
+        console.log(messagePayload);
         await defaultApp.messaging().sendMulticast(messagePayload);
-
     }
 
 }
