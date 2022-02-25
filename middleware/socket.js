@@ -24,7 +24,7 @@ module.exports = (app, io) => {
         });
 
 
-        socket.on('load_user_chats', (chatId) => {
+        socket.on('loadUserMessages', (chatId) => {
             console.log("joined room " + chatId)
             socket.join(chatId);
             console.log('loading user messages... ')

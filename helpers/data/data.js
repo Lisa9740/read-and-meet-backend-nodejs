@@ -9,7 +9,7 @@ const getChats = (token) => {
 }
 
 const getMessages = (socket, chatId) => {
-    Api.getMessages(socket.handshake.query.apiToken, chatId).then((messages => {
+   return  Api.getMessages(socket.handshake.query.apiToken, chatId).then((messages => {
         messages = messages.data;
         if (messages.length > 0) {
             console.log('emitting messages ... ')
