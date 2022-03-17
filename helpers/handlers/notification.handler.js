@@ -5,8 +5,8 @@ const defaultApp = require("../../config/firebase.params");
 // send by FCM notification to receiver message user
 const sendNotificationToUsers = async (token, allUsers, connectedUsers, chat) => {
     try {
-        console.log(chat);
-        let notification = await setNotificationUserInfo(token, connectedUsers, chat);
+
+        let notification = await setNotificationUserInfo(token.handshake.query.apiToken, connectedUsers, chat);
         await defaultApp.messaging().sendMulticast(notification);
     } catch (ex) {
         console.log(JSON.stringify(ex));
