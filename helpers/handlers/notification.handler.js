@@ -11,6 +11,7 @@ const sendNotificationToUsers = async (socket, allUsers, connectedUsers, chat) =
         let notification = Api.getDevices(socket.handshake.query.apiToken).then(async allUsers => {
             await setNotificationUserInfo(allUsers.data, connectedUsers, chat);
         });
+        console.log(notification);
         await defaultApp.messaging().sendMulticast(notification);
     } catch (ex) {
         console.log(JSON.stringify(ex));
@@ -20,11 +21,12 @@ const sendNotificationToUsers = async (socket, allUsers, connectedUsers, chat) =
 // set message payload data needed to get a notification
 const setNotificationUserInfo = async  (allUsers, connectedUsers, chat) => {
     const messagePayload = setMessagePayloadData(chat);
-
-    const userTokens = await getConnectedUserToken(allUsers, connectedUsers, chat);
+    console.log("notif",  allUsers, connectedUsers);
+    const userTokens = await  getConnectedUserToken(allUsers, connectedUsers, chat);
 
 
     if (userTokens.length === 0) { return; }
+
 
     messagePayload.tokens = cleanArrayFromUndefinedValue(userTokens);
     return messagePayload;
