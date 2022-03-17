@@ -3,7 +3,7 @@ const {Api} = require("../api.queries");
 const userConnected = (allUsers, connectedUsers, userInfo, registrationToken) => {
     let user = {userName: userInfo, registrationToken: registrationToken};
 
-    const filteredUsers = allUsers.filter(u => u.userName === userInfo);
+    const filteredUsers = allUsers.filter(u => u.registration_token === registrationToken);
 
     if (filteredUsers.length === 0) {
         allUsers.push(user);
@@ -12,10 +12,10 @@ const userConnected = (allUsers, connectedUsers, userInfo, registrationToken) =>
         user.registrationToken = registrationToken;
     }
 
-    connectedUsers.push(userInfo);
+    connectedUsers.push(filteredUsers.registrationToken);
 
     console.log("All Users", allUsers);
-    console.log("Connected Users", connectedUsers);
+    console.log("Connected Users", filteredUsers);
 }
 
 const userDisconnected = (allUsers, connectedUsers, userName) => {
