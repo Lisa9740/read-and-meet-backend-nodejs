@@ -8,13 +8,14 @@ const sendNotificationToUsers = async (socket, allUsers, connectedUsers, chat) =
     try {
 
         console.log("api", socket.handshake.query.apiToken);
-        let notification = Api.getDevices(socket.handshake.query.apiToken).then(data => {
+        let notification = Api.getDevices(socket.handshake.query.apiToken).then(async data => {
             allUsers = data.data;
+            await setNotificationUserInfo(allUsers, connectedUsers, chat);
+            await defaultApp.messaging().sendMulticast(notification);
         });
 
         console.log(notification);
-        await setNotificationUserInfo(allUsers, connectedUsers, chat);
-        await defaultApp.messaging().sendMulticast(notification);
+
     } catch (ex) {
         console.log(JSON.stringify(ex));
     }
