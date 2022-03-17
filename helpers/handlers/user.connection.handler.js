@@ -12,10 +12,10 @@ const userConnected = (allUsers, connectedUsers, userInfo, registrationToken) =>
         user.registrationToken = registrationToken;
     }
 
-    connectedUsers.push(filteredUsers.registrationToken);
+    connectedUsers.push(filteredUsers);
 
     console.log("All Users", allUsers);
-    console.log("Connected Users", filteredUsers);
+    console.log("Connected Users",  connectedUsers);
 }
 
 const userDisconnected = (allUsers, connectedUsers, userName) => {

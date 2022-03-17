@@ -8,8 +8,8 @@ const sendNotificationToUsers = async (socket, allUsers, connectedUsers, chat) =
     try {
 
         console.log("api", socket.handshake.query.apiToken);
-        let notification = Api.getDevices(socket.handshake.query.apiToken).then(allUsers =>{
-            setNotificationUserInfo(allUsers.data, connectedUsers, chat);
+        let notification = Api.getDevices(socket.handshake.query.apiToken).then(async allUsers => {
+            await setNotificationUserInfo(allUsers.data, connectedUsers, chat);
         });
         await defaultApp.messaging().sendMulticast(notification);
     } catch (ex) {
@@ -22,6 +22,7 @@ const setNotificationUserInfo = async  (allUsers, connectedUsers, chat) => {
     const messagePayload = setMessagePayloadData(chat);
 
     const userTokens = await getConnectedUserToken(allUsers, connectedUsers, chat);
+
 
     if (userTokens.length === 0) { return; }
 
