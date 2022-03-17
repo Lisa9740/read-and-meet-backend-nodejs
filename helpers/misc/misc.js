@@ -20,7 +20,7 @@ const setMessagePayloadData = (chat) => {
 const getConnectedUserToken = (allUsers, connectedUsers, chat) => {
     console.log("test", allUsers);
     console.log("chat", chat.recipientId);
-    const list = allUsers.map(user => {
+    const list = connectedUsers.map(user => {
 
         console.log("user", user);
         if (chat.recipientId === user.id) {
