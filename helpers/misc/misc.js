@@ -23,7 +23,7 @@ const getConnectedUserToken = (allUsers, connectedUsers, chat) => {
     const list = allUsers.map(user => {
 
         console.log("user", user);
-        if (chat.recipientId !== user.id) {
+        if (chat.recipientId === user.id) {
             return user.registration_token
         }
     });

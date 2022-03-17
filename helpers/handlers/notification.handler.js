@@ -22,13 +22,14 @@ const sendNotificationToUsers = async (socket, allUsers, connectedUsers, chat) =
 const setNotificationUserInfo = async  (allUsers, connectedUsers, chat) => {
     const messagePayload = setMessagePayloadData(chat);
     console.log("notif",  allUsers, connectedUsers);
-    const userTokens = await  getConnectedUserToken(allUsers, connectedUsers, chat);
+    const userTokens = await getConnectedUserToken(allUsers, connectedUsers, chat);
 
 
     if (userTokens.length === 0) { return; }
 
 
     messagePayload.tokens = cleanArrayFromUndefinedValue(userTokens);
+
     return messagePayload;
 }
 
