@@ -35,7 +35,6 @@ module.exports = (app, io) => {
         socket.on("sendToUser", async (data) => {
            data = JSON.parse(data);
 
-
            await sendNotificationToUsers(socket, allUsers, connectedUsers, data);
         });
 
