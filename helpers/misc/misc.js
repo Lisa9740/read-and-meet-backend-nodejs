@@ -18,8 +18,11 @@ const setMessagePayloadData = (chat) => {
 
 // filter from all users the connected user which is receiving message to getting their registering token
 const getConnectedUserToken = (allUsers, connectedUsers, chat) => {
+    console.log("test", allUsers);
+    console.log("chat", chat);
     return allUsers.filter(user => connectedUsers.includes(user.registration_token)).map(user => {
-        if (chat.recipient.toString() === user.userName){
+
+        if (chat.recipientId.toString() === user.id){
             return user.registrationToken
         }
     });

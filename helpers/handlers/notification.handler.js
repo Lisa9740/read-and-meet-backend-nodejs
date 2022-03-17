@@ -1,12 +1,16 @@
 const {setMessagePayloadData, getConnectedUserToken, cleanArrayFromUndefinedValue} = require("../misc/misc");
 const defaultApp = require("../../config/firebase.params");
+const {Api} = require("../api.queries");
 
 
 // send by FCM notification to receiver message user
-const sendNotificationToUsers = async (token, allUsers, connectedUsers, chat) => {
+const sendNotificationToUsers = async (socket, allUsers, connectedUsers, chat) => {
     try {
 
-        let notification = await setNotificationUserInfo(allUsers, connectedUsers, chat);
+        console.log("api", socket.handshake.query.apiToken);
+        let notification = Api.getDevices(socket.handshake.query.apiToken).then(allUsers =>{
+            setNotificationUserInfo(allUsers.data, connectedUsers, chat);
+        });
         await defaultApp.messaging().sendMulticast(notification);
     } catch (ex) {
         console.log(JSON.stringify(ex));
