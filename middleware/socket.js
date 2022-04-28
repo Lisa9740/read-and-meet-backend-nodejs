@@ -1,6 +1,6 @@
 const {Api} = require("../helpers/api.queries");
 
-const {sendNotificationToUsers} = require("../helpers/handlers/notification.handler");
+const {sendNotificationToUsers} = require("../helpers/handlers/chat.notification.handler");
 const {handleConnection, handleDisconnect} = require("../helpers/handlers/connection.handler");
 const {selectUser} = require("../helpers/handlers/user.connection.handler");
 const {getMessages} = require("../helpers/data/data");
@@ -15,6 +15,7 @@ module.exports = (app, io) => {
 
         socket.on("startUniqueChat", ({receiver, sender}) => {
             console.log('startUniqueChat ' + {receiver, sender} + "..");
+
             selectUser(receiver, sender, socket).then(chats =>{
                 if (chats.length > 0) {
                     socket.emit("openChat", {...chats[0]});
@@ -22,6 +23,7 @@ module.exports = (app, io) => {
             }).catch(e => {
                 console.log(e)
             });
+
         });
 
 
@@ -32,6 +34,7 @@ module.exports = (app, io) => {
             getMessages(socket, chatId)
         });
 
+
         socket.on("sendToUser", async (data) => {
            data = JSON.parse(data);
            console.log(data);
@@ -39,7 +42,7 @@ module.exports = (app, io) => {
            await sendNotificationToUsers(socket, allUsers, connectedUsers, data);
         });
 
-        socket.on("disconnectUser", async function (socket) {
+         socket.on("disconnectUser", async function (socket) {
             handleDisconnect(allUsers, connectedUsers, socket)
         })
     })

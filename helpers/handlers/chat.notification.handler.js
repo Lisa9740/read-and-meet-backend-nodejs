@@ -6,14 +6,9 @@ const {Api} = require("../api.queries");
 // send by FCM notification to receiver message user
 const sendNotificationToUsers = async (socket, allUsers, connectedUsers, chat) => {
     try {
-
-        console.log("api", socket.handshake.query.apiToken);
         allUsers = await Api.getDevices(socket.handshake.query.apiToken);
-        console.log("allUser", allUsers.data);
         let notification = await setNotificationUserInfo(allUsers.data, connectedUsers, chat);
         await defaultApp.messaging().sendMulticast(notification);
-
-
     } catch (ex) {
         console.log(JSON.stringify(ex));
     }

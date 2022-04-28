@@ -13,7 +13,7 @@ const getMessages = (socket, chatId) => {
         messages = messages.data;
         if (messages.length > 0) {
             console.log('emitting messages ... ')
-            socket.emit("loadUniqueChat", messages);
+            socket.emit("message" + chatId, messages);
         }
     }))
 }
